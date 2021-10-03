@@ -13,6 +13,9 @@ import javafx.scene.shape.Shape;
  *
  * @author Keiner
  */
+
+// Abstract class to create ship, asteroids and projectiles
+
 public abstract class Character {
     private Polygon character;
     private Point2D movement;
