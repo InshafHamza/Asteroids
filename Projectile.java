@@ -11,6 +11,9 @@ import javafx.scene.shape.Polygon;
  *
  * @author Keiner
  */
+
+// Class to create the projectiles to fire at the asteroids
+
 public class Projectile extends Character {
     private boolean alive;
     
