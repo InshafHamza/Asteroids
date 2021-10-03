@@ -12,6 +12,9 @@ import javafx.scene.shape.Polygon;
  *
  * @author Keiner
  */
+
+// Helper class to create asteroids of various shapes and sizes
+
 public class PolygonFactory {
     
     public Polygon createPolygon() {
