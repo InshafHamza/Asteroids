@@ -33,9 +33,10 @@ public class AsteroidsApplication extends Application {
         pane.getChildren().add(text);
         pane.setPrefSize(WIDTH, HEIGHT);
         
-        // To add points to the game
+        // A class which is used to add points to the game
         AtomicInteger points = new AtomicInteger();
         
+        // Create the ship to fire at asteroids
         Ship ship = new Ship(WIDTH/2, HEIGHT/2);
         
         // Create asteroids and store them in an ArrayList
@@ -51,7 +52,8 @@ public class AsteroidsApplication extends Application {
         asteroids.forEach(asteroid -> pane.getChildren().add(asteroid.getCharacter()));
               
         Scene scene = new Scene(pane);
-       
+        
+        // Put key presses in the HashMap and set their status
         scene.setOnKeyPressed((event) -> {
             pressedKeys.put(event.getCode(),true);
         });
@@ -64,6 +66,7 @@ public class AsteroidsApplication extends Application {
             
             public void handle(long now){
                 
+                // Display points
                 text.setText("Points: " + points);
                 
                 if(pressedKeys.getOrDefault(KeyCode.LEFT, Boolean.FALSE)){
@@ -75,7 +78,7 @@ public class AsteroidsApplication extends Application {
                 if(pressedKeys.getOrDefault(KeyCode.DOWN, Boolean.FALSE)){
                     ship.accelerate();
                 }
-                // Create projectiles and add them to the arraylist and also to the window pane
+                // Create projectiles and add them to the arraylist and also to the window pane. A maximum of 2 projectiles are fired at a time.
                 if(pressedKeys.getOrDefault(KeyCode.SPACE, Boolean.FALSE) && projectiles.size()<3){
                     Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(),(int) ship.getCharacter().getTranslateY());
                     projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
@@ -112,7 +115,7 @@ public class AsteroidsApplication extends Application {
                     }
                 });
                 
-                // Remove all the projectiles from the window pane and the arraylist whose Alive status is false
+                // Remove all the projectiles whose Alive status is false from the window pane and the arraylist 
                 projectiles.stream()
                     .filter(projectile -> !projectile.isAlive())
                     .forEach(projectile -> pane.getChildren().remove(projectile.getCharacter()));
@@ -120,7 +123,7 @@ public class AsteroidsApplication extends Application {
                         .filter(projectile -> !projectile.isAlive())
                         .collect(Collectors.toList()));
                 
-                // Remove all the asteroids from the window pane and the arraylist whose Alive status is false
+                // Remove all the asteroids whose Alive status is false from the window pane and the arraylist
                 asteroids.stream()
                         .filter(asteroid -> !asteroid.isAlive())
                         .forEach(asteroid -> pane.getChildren().remove(asteroid.getCharacter()));
@@ -128,7 +131,7 @@ public class AsteroidsApplication extends Application {
                             .filter(asteroid -> !asteroid.isAlive())
                             .collect(Collectors.toList()));
                 
-                // Add new asteroids to the window pane at regular intervals
+                // Add new asteroids to the window pane at certain intervals
                 if(Math.random() < 0.005) {
                     Asteroid asteroid = new Asteroid(WIDTH, HEIGHT);
                     if(!asteroid.collide(ship)) {
