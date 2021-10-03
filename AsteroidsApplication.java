@@ -19,7 +19,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AsteroidsApplication extends Application {
     public static int WIDTH = 600;
     public static int HEIGHT = 400;
+    
+    // HashMap to store key presses
     Map<KeyCode,Boolean> pressedKeys = new HashMap<>();
+    
+    // ArrayList to store the projectiles
     List<Projectile> projectiles = new ArrayList<>();
 
     @Override
@@ -29,9 +33,12 @@ public class AsteroidsApplication extends Application {
         pane.getChildren().add(text);
         pane.setPrefSize(WIDTH, HEIGHT);
         
+        // To add points to the game
         AtomicInteger points = new AtomicInteger();
         
         Ship ship = new Ship(WIDTH/2, HEIGHT/2);
+        
+        // Create asteroids and store them in an ArrayList
         List<Asteroid> asteroids = new ArrayList<>();
         for(int i=0;i<5;i++){
             Random rand = new Random();
@@ -39,6 +46,7 @@ public class AsteroidsApplication extends Application {
             asteroids.add(asteroid);
         }
         
+        // Add ship and asteroids to the window pane
         pane.getChildren().add(ship.getCharacter());
         asteroids.forEach(asteroid -> pane.getChildren().add(asteroid.getCharacter()));
               
@@ -67,6 +75,7 @@ public class AsteroidsApplication extends Application {
                 if(pressedKeys.getOrDefault(KeyCode.DOWN, Boolean.FALSE)){
                     ship.accelerate();
                 }
+                // Create projectiles and add them to the arraylist and also to the window pane
                 if(pressedKeys.getOrDefault(KeyCode.SPACE, Boolean.FALSE) && projectiles.size()<3){
                     Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(),(int) ship.getCharacter().getTranslateY());
                     projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
@@ -81,12 +90,14 @@ public class AsteroidsApplication extends Application {
                 asteroids.forEach(asteroid -> asteroid.move());
                 projectiles.forEach(projectile -> projectile.move());
                 
+                // Stop the game if the ship collides with an asteroid
                 asteroids.forEach(asteroid -> {
                     if(ship.collide(asteroid)){
                         stop();
                     }
                 });
-                
+               
+                // If a projectile or asteroid collides with the other, set the Alive status of both to false
                 projectiles.forEach(projectile -> {
                     asteroids.forEach(asteroid -> {
                         if(projectile.collide(asteroid)) {
@@ -94,56 +105,30 @@ public class AsteroidsApplication extends Application {
                             asteroid.setAlive(false);
                         }
                     });
+                    
+                    // Add points for every destroyed asteroid
+                    if(!projectile.isAlive()) {
+                        text.setText("Points: " + points.addAndGet(1000));
+                    }
                 });
-
+                
+                // Remove all the projectiles from the window pane and the arraylist whose Alive status is false
                 projectiles.stream()
                     .filter(projectile -> !projectile.isAlive())
                     .forEach(projectile -> pane.getChildren().remove(projectile.getCharacter()));
                 projectiles.removeAll(projectiles.stream()
                         .filter(projectile -> !projectile.isAlive())
                         .collect(Collectors.toList()));
-
+                
+                // Remove all the asteroids from the window pane and the arraylist whose Alive status is false
                 asteroids.stream()
                         .filter(asteroid -> !asteroid.isAlive())
                         .forEach(asteroid -> pane.getChildren().remove(asteroid.getCharacter()));
                 asteroids.removeAll(asteroids.stream()
                             .filter(asteroid -> !asteroid.isAlive())
                             .collect(Collectors.toList()));
-                /*List<Projectile> projectilesToRemove = projectiles.stream().filter(projectile -> {
-                    List<Asteroid> collisions = asteroids.stream()
-                                                .filter(asteroid -> asteroid.collide(projectile))
-                                                .collect(Collectors.toList());
-
-                    if(collisions.isEmpty()) {
-                        return false;
-                    }
-
-                    collisions.stream().forEach(collided -> {
-                        asteroids.remove(collided);
-                        pane.getChildren().remove(collided.getCharacter());
-                    });
-
-                    return true;
-                }).collect(Collectors.toList());
-
-                projectilesToRemove.forEach(projectile -> {
-                    pane.getChildren().remove(projectile.getCharacter());
-                    projectiles.remove(projectile);
-                });*/
                 
-                projectiles.forEach(projectile -> {
-                    asteroids.forEach(asteroid -> {
-                        if(projectile.collide(asteroid)) {
-                            projectile.setAlive(false);
-                            asteroid.setAlive(false);
-                        }
-                    });
-
-                    if(!projectile.isAlive()) {
-                        text.setText("Points: " + points.addAndGet(1000));
-                    }
-                });
-                
+                // Add new asteroids to the window pane at regular intervals
                 if(Math.random() < 0.005) {
                     Asteroid asteroid = new Asteroid(WIDTH, HEIGHT);
                     if(!asteroid.collide(ship)) {
@@ -164,9 +149,9 @@ public class AsteroidsApplication extends Application {
         launch(args);
     }
 
-    public static int partsCompleted() {
+    /*public static int partsCompleted() {
         // State how many parts you have completed using the return value of this method
         return 4;
-    }
+    }*/
 
 }
