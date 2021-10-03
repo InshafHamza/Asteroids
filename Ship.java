@@ -12,6 +12,9 @@ import javafx.scene.shape.Polygon;
  *
  * @author Keiner
  */
+
+// Class to create the ship which fires at the asteroids
+
 public class Ship extends Character {
     //private Polygon character;
     //private Point2D movement;
