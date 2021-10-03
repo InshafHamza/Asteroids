@@ -12,6 +12,9 @@ import java.util.Random;
  *
  * @author Keiner
  */
+
+// Class to create asteroids. After their creation and addition to the window pane, they are moving about in random directions and are also rotating
+
 public class Asteroid extends Character {
     private double rotationalMovement;
     private boolean alive;
